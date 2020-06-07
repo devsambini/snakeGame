@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snake Game</title>
+</head>
+<body>
+  <canvas id="canvas" width="400" height="400"></canvas>
+  <script>
+
+    // Variáveis do jogo
+    snake = [];
+    positionX = 10;
+    positionY = 10;
+    speedX = 0;
+    speedY = 0;
+    foodX = 15;
+    foodY = 15;
+    grid = 20;
+    tam = 5;
+
+    // Função para mostrar o jogo assim que o navegador iniciar
+    window.onload = function(){
+      canvas = document.getElementById('canvas');
+      ctx = canvas.getContext('2d');
+      document.addEventListener('keydown', (e) => {
+        switch(e.keyCode){
+          case 37:
+              speedX = -1;
+              speedY = 0;
+              break;
+          case 38:
+              speedX = 0;
+              speedY = -1;
+              break;
+          case 39:
+              speedX = 1;
+              speedY = 0;
+              break;
+          case 40:
+              speedX = 0;
+              speedY = 1;
+              break;
+        }
+      })
+      // Mantendo a função executando o tempo todo
+      setInterval(jogo, 1000/10);
+    }
+    // Função principal
+
+    function jogo(){
+      // Fazendo a cobra andar
+      positionX += speedX;
+      positionY += speedY;
+      // Fazendo a cobra atravessar as paredes
+      if(positionX < 0){
+        positionX = grid;
+      };
+      if(positionX > grid){
+        positionX = 0;
+      };
+      if(positionY < 0){
+        positionY = grid;
+      };
+      if(positionY > grid){
+        positionY = 0;
+      };
+
+      // background do retangulo
+      ctx.fillStyle = '#94ff94';
+      // Criando o retangulo onde irá se passar o jogo
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#000';
+      // Criando a cobra
+      
+      // Definindo o tamanho inicial da cobra
+      while(snake.length > tam){
+        snake.shift();
+      };
+      for(var i = 0; i < snake.length; i++){
+        ctx.fillRect(snake[i].x * grid, snake[i].y * grid, grid - 1, grid - 1);
+        // fazendo a cobra voltar ao tamanho inicial quando colidir com ela mesmo
+        if(snake[i].x == positionX && snake[i].y == positionY){
+          tam = 5;
+        }
+      };
+      snake.push({ x: positionX, y: positionY });
+      // Criando a comida da cobra
+      ctx.fillStyle = '#ff0000';
+      ctx.fillRect(foodX * grid, foodY * grid, grid - 1, grid - 1);
+      // Fazendo a cobra comer e aumentar
+      if(positionX == foodX && positionY == foodY){
+        tam++;
+        // fazendo a comida aparecer em lugares diferentes
+        foodX = Math.floor(Math.random() * grid);
+        foodY = Math.floor(Math.random() * grid);
+      };
+
+
+
+    }
+  </script>
+</body>
+</html>
